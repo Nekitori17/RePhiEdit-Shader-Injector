@@ -7,7 +7,6 @@
 #include <vector>
 #include <windows.h>
 
-
 namespace fs = std::filesystem;
 
 // Stores the original function pointer to call after our hook logic
@@ -48,12 +47,8 @@ void ParseUniforms(std::vector<std::string> *varVector,
   }
 }
 
-/**
- * Hooked version of the engine's shader initialization function.
- * This runs after the game has registered its default shaders.
- */
 void *__fastcall ShaderLoader_Sub46CC60(void *this_ptr, void *edx_unused) {
-  // First, let the original function finish its work
+  // First, let the original function finish its internal engine housekeeping.
   void *result = original_Sub46CC60(this_ptr, nullptr);
 
   uintptr_t baseAddr = (uintptr_t)GetModuleHandle(NULL);
@@ -64,7 +59,13 @@ void *__fastcall ShaderLoader_Sub46CC60(void *this_ptr, void *edx_unused) {
   auto globalVarVector =
       (std::vector<std::string> *)(baseAddr + Offsets::UNIFORM_NAMES_VECTOR);
 
-  // Scan for custom shaders in the Resources/shaders directory
+  // Clear existing hardcoded shaders and uniforms to initialize from folder
+  // Note: Using clear() assumes ABI compatibility between the injector and the
+  // game.
+  globalShaderVector->clear();
+  globalVarVector->clear();
+
+  // Scan for shaders in the Resources/shaders directory
   std::string shaderPath = "Resources/shaders";
   if (fs::exists(shaderPath)) {
     for (const fs::directory_entry &entry :
@@ -74,26 +75,15 @@ void *__fastcall ShaderLoader_Sub46CC60(void *this_ptr, void *edx_unused) {
 
         std::string fileName = entry.path().stem().string();
 
-        // Check if this shader is already registered
-        bool alreadyHas = false;
-        for (const auto &s : *globalShaderVector) {
-          if (s == fileName) {
-            alreadyHas = true;
-            break;
-          }
-        }
+        // Register the base shader name
+        globalShaderVector->push_back(fileName);
 
-        if (!alreadyHas) {
-          // Register the base shader name
-          globalShaderVector->push_back(fileName);
+        // Register the variant '_2' which is required for the engine's
+        // layering/save system (internal game logic expects pairs)
+        globalShaderVector->push_back(fileName + "_2");
 
-          // Register the variant '_2' which is required for the engine's
-          // layering/save system
-          globalShaderVector->push_back(fileName + "_2");
-
-          // Parse the shader file to find and register uniform variables
-          ParseUniforms(globalVarVector, entry.path());
-        }
+        // Parse the shader file to find and register uniform variables
+        ParseUniforms(globalVarVector, entry.path());
       }
     }
   }
