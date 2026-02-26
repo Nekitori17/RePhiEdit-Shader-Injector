@@ -1,0 +1,47 @@
+name: Build and Release
+
+on:
+  push:
+    branches: ["main", "master"]
+    tags: ["v*"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure CMake
+        # We use -A Win32 because the offsets target the 32-bit version of the game.
+        run: cmake -S . -B build -A Win32 -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Rename Artifact (Cleanup)
+        # Ensure we have the correct DLL name for the release
+        shell: pwsh
+        run: |
+          if (Test-Path "build/Release/zlib1.dll") {
+            Copy-Item "build/Release/zlib1.dll" "zlib1.dll"
+          }
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zlib1-proxy
+          path: zlib1.dll
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: zlib1.dll
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

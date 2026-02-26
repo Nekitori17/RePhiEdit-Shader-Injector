@@ -74,3 +74,12 @@ If RePhiEdit updates and the injector stops working:
    - Uniform names vector
 2. Update the hex values in `src/Offsets.h`.
 3. Rebuild and redeploy.
+
+## Continuous Integration (CI/CD)
+
+This project includes a GitHub Actions workflow that automatically builds and releases the `zlib1.dll` whenever you:
+
+- Push code to the `main` or `master` branch.
+- Push a version tag (e.g., `git tag v1.0` followed by `git push --tags`).
+
+You can find the compiled binaries in the **Actions** or **Releases** tab of your GitHub repository.
