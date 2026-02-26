@@ -15,21 +15,34 @@ set(MINHOOK_SOURCES
   "${MINHOOK_DIR}/src/hde/hde64.c"
 )
 
-set(PROJECT_SOURCES src/main.cpp)
+set(PROJECT_SOURCES 
+  src/Offsets.h
+  src/ModLoader.h
+  src/Modloader.cpp
+  src/ShaderInjector.h
+  src/ShaderInjector.cpp
+  src/ZLibProxy.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${PROJECT_SOURCES} ${MINHOOK_SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE "${MINHOOK_DIR}/include")
-
-target_link_options(${PROJECT_NAME}
-PRIVATE
-  -static
-  -static-libgcc
-  -static-libstdc++
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  OUTPUT_NAME "zlib1"
+  PREFIX ""
 )
 
-if(MINGW)
+target_include_directories(${PROJECT_NAME} PRIVATE "${MINHOOK_DIR}/include")
+
+if(MSVC)
+  set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  
+  message(STATUS "Configured for MSVC compiler")
+
+elseif(MINGW)
+  target_link_options(${PROJECT_NAME} PRIVATE -static -static-libgcc -static-libstdc++)
   target_link_libraries(${PROJECT_NAME} psapi)
+  message(STATUS "Configured for MinGW compiler")
 endif()
+
 
 message(STATUS "Build setup OK! Project: ${PROJECT_NAME}")

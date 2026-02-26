@@ -7,6 +7,6 @@ CompileFlags:
     - -IC:\W64DevKit\lib\gcc\x86_64-w64-mingw32\15.2.0\include\c++
     - -IC:\W64DevKit\lib\gcc\x86_64-w64-mingw32\15.2.0\include\c++\x86_64-w64-mingw32
     - -IC:\W64DevKit\lib\gcc\x86_64-w64-mingw32\15.2.0\include\c++\backward
-    - "-ID:/Nekitori17/workspaces/RePhiEdit-Stuff/Shader Injector/libs/minhook/include"
+    - "-ID:/Nekitori17/workspaces/RePhiEdit-Stuff/Shader-Injector/libs/minhook/include"
 Diagnostics:
   UnusedIncludes: None
