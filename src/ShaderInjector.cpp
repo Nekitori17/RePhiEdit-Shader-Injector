@@ -63,7 +63,7 @@ void *__fastcall ShaderLoader_Sub46CC60(void *this_ptr, void *edx_unused) {
   // Note: Using clear() assumes ABI compatibility between the injector and the
   // game.
   globalShaderVector->clear();
-  globalVarVector->clear();
+  // globalVarVector->clear();
 
   // Scan for shaders in the Resources/shaders directory
   std::string shaderPath = "Resources/shaders";
