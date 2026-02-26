@@ -1,12 +1,47 @@
 CompileFlags:
-  Compiler: C:\W64DevKit\bin\g++.exe
   Add:
-    - --target=x86_64-w64-windows-gnu
+    # C++ Standard
     - -std=c++17
-    - -IC:\W64DevKit\include
-    - -IC:\W64DevKit\lib\gcc\x86_64-w64-mingw32\15.2.0\include\c++
-    - -IC:\W64DevKit\lib\gcc\x86_64-w64-mingw32\15.2.0\include\c++\x86_64-w64-mingw32
-    - -IC:\W64DevKit\lib\gcc\x86_64-w64-mingw32\15.2.0\include\c++\backward
+    
+    # MSVC compatibility
+    - /D_HAS_CXX17=1
+    - /D_CRT_SECURE_NO_WARNINGS
+    - /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
+    - /D__cpp_lib_filesystem=201703L
+    
+    # Windows target
+    - /DWIN32
+    - /D_WINDOWS
+    - /DWIN64
+    - /D_WIN32_WINNT=0x0A00
+    - /DWINVER=0x0A00
+    - /DUNICODE
+    - /D_UNICODE
+    
+    # MSVC STL headers
+    - "-IC:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/include"
+    
+    # Windows SDK - ucrt, shared, um, winrt
+    - "-IC:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/ucrt"
+    - "-IC:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/shared"
+    - "-IC:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/um"
+    - "-IC:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/winrt"
+    - "-IC:/Program Files (x86)/Windows Kits/10/Include/10.0.26100.0/cppwinrt"
+    
+    # Project libs
     - "-ID:/Nekitori17/workspaces/RePhiEdit-Stuff/Shader-Injector/libs/minhook/include"
+
 Diagnostics:
   UnusedIncludes: None
+  # Suppress common false positives on Windows
+  Suppress:
+    - -Wmicrosoft-include
+    - unknown_pragma
+
+Index:
+  StandardLibrary: Yes
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes

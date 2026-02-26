@@ -18,7 +18,7 @@ set(MINHOOK_SOURCES
 set(PROJECT_SOURCES 
   src/Offsets.h
   src/ModLoader.h
-  src/Modloader.cpp
+  src/ModLoader.cpp
   src/ShaderInjector.h
   src/ShaderInjector.cpp
   src/ZLibProxy.cpp
@@ -33,15 +33,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_include_directories(${PROJECT_NAME} PRIVATE "${MINHOOK_DIR}/include")
 
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
 if(MSVC)
   set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-  
   message(STATUS "Configured for MSVC compiler")
-
-elseif(MINGW)
-  target_link_options(${PROJECT_NAME} PRIVATE -static -static-libgcc -static-libstdc++)
-  target_link_libraries(${PROJECT_NAME} psapi)
-  message(STATUS "Configured for MinGW compiler")
 endif()
 
 

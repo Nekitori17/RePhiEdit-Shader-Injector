@@ -32,28 +32,26 @@ Each custom shader `my_shader` will be available as:
 ### Requirements
 
 - CMake (3.15+)
-- MinGW (Recommended) or MSVC
-
-### Using the Build Script
+- Visual Studio 2019/2022 with C++ Desktop Development (Recommended) or another MSVC-compatible toolchain
 
 Run the provided `build.bat` in a terminal:
 
 ```batch
-# Build release version (MinGW)
-build.bat mingw clean
+# Build release version (Win32)
+build.bat clean release
 
-# Build debug version (MinGW)
-build.bat mingw debug
-
-# Build with MSVC (Win32)
-build.bat msvc clean
+# Build debug version (Win32)
+build.bat debug
 ```
 
-### Manual Build
+> [!NOTE]
+> This script uses CMake to configure the project for MSVC. Using CMake ensures that all library headers (like `MinHook.h`) are correctly found during the build process.
 
 ```bash
-cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+# Generate build files for MSVC (Win32)
+cmake -S . -B build -A Win32
+# Build the project
+cmake --build build --config Release
 ```
 
 ## Project Structure

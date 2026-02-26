@@ -7,12 +7,6 @@ set "GENERATOR=MSVC"
 set "DO_CLEAN=0"
 
 for %%a in (%*) do (
-    if /I "%%a"=="mingw" (
-        set "GENERATOR=MinGW"
-    )
-    if /I "%%a"=="msvc" (
-        set "GENERATOR=MSVC"
-    )
     if /I "%%a"=="debug" (
         set "BUILD_TYPE=Debug"
     )
@@ -45,11 +39,7 @@ if not exist "%BUILD_DIR%" (
 
 echo [INFO] Configuring project...
 
-if "!GENERATOR!"=="MinGW" (
-  cmake -S . -B "%BUILD_DIR%" -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=!BUILD_TYPE!
-) else (
-  cmake -S . -B "%BUILD_DIR%" -A Win32
-)
+cmake -S . -B "%BUILD_DIR%" -A Win32
 
 if %ERRORLEVEL% neq 0 (
   echo [ERROR] CMake configuration failed!
@@ -68,8 +58,7 @@ if %ERRORLEVEL% neq 0 (
 echo.
 echo ==========================================
 echo [SUCCESS] Build completed successfully!
-echo Output: %CD%\%BUILD_DIR%\!BUILD_TYPE!\zlib1.dll (MSVC)
-echo     OR: %CD%\%BUILD_DIR%\zlib1.dll (MinGW)
+echo Output: %CD%\%BUILD_DIR%\!BUILD_TYPE!\zlib1.dll
 echo ==========================================
 goto :end
 
